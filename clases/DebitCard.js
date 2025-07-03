@@ -1,26 +1,48 @@
-let id = 1;
+let debitsCardsId = 1;
 let cardsNumbers = 1000000000000000;
 
 class DebitCard {
-    constructor(proveedor, codigoSeguridad, nombreEscrito) {
-        this.idTarjetaDebito = id++;
-        this.numeroTarjetaDebito = cardsNumbers++;
-        this.proveedor = proveedor;
+    constructor(provider, emitionDate, securityCode, displayName) {
+        this.id = debitsCardsId;
+        debitsCardsId++;
 
-        this.emision = new Date();
-        const año = this.emision.getFullYear() + 5;
-        const mes = (this.emision.getMonth() + 1).toString().padStart(2, '0');
-        this.vencimientoTarjetaDebito = `${mes}/${año}`;
+        this.cardNumber = cardsNumbers;
+        cardsNumbers++;
 
-        this.codigoSeguridad = codigoSeguridad;
-        this.nombreEscrito = nombreEscrito;
-        this.historialConsumos = [];
+        //VISA, American Express, MasterCard, CABAL...
+        this.provider = provider;
+
+        //Para poder tener distintas fechas de vencimiento de tarjeta.
+        this.expirationDate = emitionDate;
+        this.expirationDate.setFullYear(this.expirationDate.getFullYear() + 5);
+
+        //Solo para saber que existe
+        this.securityCode = securityCode;
+
+        //Ej: NICOLAS AGUST FACON o NICOLAS A FACON
+        this.displayName = displayName;
+
+        this.consumptions = [];
+    }
+
+    recordDebitCardMovements(idThirdPartyInvolved, amount) {
+        try {
+            this.balance += amount
+            this.movements.push(new Movement(idThirdPartyInvolved, amount, 0))
+            return true
+        } catch {
+            false
+        }
     }
 }
 
-const debitCards = [];
-debitCards.push(new DebitCard("Visa", 348, "OLIVIA SERRA"));
-debitCards.push(new DebitCard("Mastercard", 721, "MARTINA R SANDRI"));
-debitCards.push(new DebitCard("Mastercard", 874, "FRANCIS PICCA"));
-debitCards.push(new DebitCard("American Express", 119, "TAYLOR A SWIFT"));
-debitCards.push(new DebitCard("Visa", 243, "A A"));
+const debitCards = [
+    new DebitCard("Visa", "2023-02-10", "111", "Visa Débito"),
+    new DebitCard("MasterCard", "2022-09-05", "222", "MasterCard Joven"),
+    new DebitCard("Maestro", "2021-12-01", "333", "Maestro Classic"),
+    new DebitCard("Naranja", "2024-04-15", "444", "Naranja Débito"),
+    new DebitCard("Cabal", "2023-06-20", "555", "Cabal Universitaria")
+];
+
+
+export { DebitCard };
