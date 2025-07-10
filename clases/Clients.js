@@ -46,6 +46,3 @@ const clients = [
     new Clients("44332211", "segura321", "Laura", "Martínez"),
     new Clients("55667788", "hola1234", "María", "Gómez")
 ];
-
-
-export { Clients };

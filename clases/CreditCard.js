@@ -1,18 +1,20 @@
 let creditsCardsId = 1;
+let creditCardsNumbers = 100000000000000;
 
 class CreditCard {
     constructor(provider, emitionDate, securityCode, displayName, closeDate, balanceExpirationDate) {
         this.id = creditsCardsId;
         creditsCardsId++;
 
-        this.cardNumber = cardsNumbers;
-        cardsNumbers++;
+        this.cardNumber = creditCardsNumbers;
+        creditCardsNumbers++;
 
         //VISA, American Express, MasterCard, CABAL...
         this.provider = provider;
 
         //Para poder tener distintas fechas de vencimiento de tarjeta.
-        this.expirationDate = emitionDate;
+        this.expirationDate = new Date(emitionDate);
+        this.expirationDate = new Date(this.expirationDate);
         this.expirationDate.setFullYear(this.expirationDate.getFullYear() + 5);
 
         //Solo para saber que existe
@@ -79,5 +81,3 @@ const creditCards = [
     new CreditCard("Naranja", "2021-11-01", "321", "Naranja Clásica", "2021-12-01", "2023-11-01"),
     new CreditCard("Visa", "2023-07-30", "654", "Visa Débito", "2023-08-20", "2025-07-30")
 ];
-
-export { CreditCard };

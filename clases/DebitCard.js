@@ -1,19 +1,20 @@
 let debitsCardsId = 1;
-let cardsNumbers = 1000000000000000;
+let debitCardsNumbers = 1000000000000000;
 
 class DebitCard {
     constructor(provider, emitionDate, securityCode, displayName) {
         this.id = debitsCardsId;
         debitsCardsId++;
 
-        this.cardNumber = cardsNumbers;
-        cardsNumbers++;
+        this.cardNumber = debitCardsNumbers;
+        debitCardsNumbers++;
 
         //VISA, American Express, MasterCard, CABAL...
         this.provider = provider;
 
         //Para poder tener distintas fechas de vencimiento de tarjeta.
-        this.expirationDate = emitionDate;
+        this.expirationDate = new Date(emitionDate);
+        this.expirationDate = new Date(this.expirationDate);
         this.expirationDate.setFullYear(this.expirationDate.getFullYear() + 5);
 
         //Solo para saber que existe
@@ -43,6 +44,3 @@ const debitCards = [
     new DebitCard("Naranja", "2024-04-15", "444", "Naranja Débito"),
     new DebitCard("Cabal", "2023-06-20", "555", "Cabal Universitaria")
 ];
-
-
-export { DebitCard };

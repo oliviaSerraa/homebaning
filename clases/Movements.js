@@ -12,8 +12,3 @@ class Movement{
             this.cuotes = cuotes;
     }
 }
-
-
-
-
-export { Movement };

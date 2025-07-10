@@ -75,12 +75,9 @@ class SavingsBank {
 }
 
 const savingBanks = [
-    new SavingBank("ARS", "mi.ahorro.personal", 500000),
-    new SavingBank("USD", "dolar.futuro.2025", 10000),
-    new SavingBank("ARS", "gastos.mensuales.abril", 150000),
-    new SavingBank("EUR", "ahorro.europa.viaje", 8000),
-    new SavingBank("ARS", "regalo.cumple.juan", 50000)
-]
-
-
-export { SavingsBank };
+    new SavingsBank("ARS", "mi.ahorro.personal", 500000),
+    new SavingsBank("USD", "dolar.futuro.2025", 10000),
+    new SavingsBank("ARS", "gastos.mensuales.abril", 150000),
+    new SavingsBank("EUR", "ahorro.europa.viaje", 8000),
+    new SavingsBank("ARS", "regalo.cumple.juan", 50000)
+];

@@ -1,10 +1,10 @@
-let screen = 0;
+const screen = 0;
 
 // 9)
 function searchClientById(clientID) {
     for (let i = 0; i < clients.lenght; i++) {
         if (clients[i].id == clientID) {
-            consolelog(i)
+            console.log(i)
             return i
         }
     }
@@ -123,18 +123,7 @@ function moneyTransfer(amountInPesos, idOrigin, idDestination){
 }
 
 // 24)
-function login(){
-    let dni = document.getElementById("loginDni").value;
-    let  password = document.getElementById("loginPassword").velue;
-
-    for(let i = 0; i < clients.length; i++){
-        if (clients[i].dni == dni && clints[i].password == password){
-            screen = true;
-        }
-    }
-}
-
-function changeScreen(){
+function changeScreen() {
     const accountsSection = document.getElementById("accounts");
     const debitCardsSection = document.getElementById("debitCards");
     const transfersSection = document.getElementById("transfers");
@@ -145,9 +134,7 @@ function changeScreen(){
     const loginSection = document.getElementById("loginFormContainer");
     const registerSection = document.getElementById("registerFormContainer");
 
-    console.log("uwu");
-
-    if(screen == 0){
+    if (screen == 0) {
         loginSection.style.display = "";
         registerSection.style.display = "";
         accountsSection.style.display = "none";
@@ -157,11 +144,60 @@ function changeScreen(){
         creditCardsSection.style.display = "none";
         paymentsSection.style.display = "none";
         investmentsSection.style.display = "none";
-    } if (screen == 1){
-        accountsSection.style.display, debitCardsSection.style.display, transfersSection.style.display, dollarSection.style.display, creditCardsSection.style.display,paymentsSection.style.display, investmentsSection.style.display = "";
-        loginSection.style.display, registerSection.style.display = "none"
+    } if (screen == 1) {
+        accountsSection.style.display = "";
+        debitCardsSection.style.display = "";
+        transfersSection.style.display = "";
+        dollarSection.style.display = "";
+        creditCardsSection.style.display = "";
+        paymentsSection.style.display = "";
+        investmentsSection.style.display = "";
+        loginSection.style.display = "none";
+        registerSection.style.display = "none";
     }
 }
 
+function login(){
+    let dni = document.getElementById("loginDni").value;
+    let  password = document.getElementById("loginPassword").value;
+
+    for(let i = 0; i < clients.length; i++){
+        if (clients[i].dni == dni && clints[i].password == password){
+            screen=1;
+        } else {
+            alert("Error. Verifique haber completado los campos correctamente");
+        }
+    }
+}
+
+//25)
+function register(){
+    let name = document.getElementById("registerName").value;
+    let  lastName = document.getElementById("registerLastName").value;
+    let dni = document.getElementById("registerDni").value;
+    let email = document.getElementById("registerEmail").value;
+    let password = document.getElementById("registerPassword").value;
+    if(name === "" || lastName === "" || dni === "" || email === "" || password === ""){
+        for(let i = 0; i < clients.length; i++){
+            if(clients[i].dni == dni){
+                alert("Error registrando la cuenta");
+            } else {
+                if(dni.lenght < 7){
+                    alert("Error registrando la cuenta");
+                } else {
+                    clients.push(dni, password, name, lastName)
+                }
+            }
+        }
+    } else {
+        alert("Error registrando la cuenta");
+    }
+}
+
+//26)
+function logout(){
+    alert("Se cerró la sesión");
+    screen = 0;
+}
 
 changeScreen()
