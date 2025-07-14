@@ -1,83 +1,87 @@
-let savingsBanksId = 1;
-//Es un número único de 22 dígitos que identifica la cuenta
+
+
+let savingsBanksId = 0;
 let cbuCounter = 1000000000000000000000;
 
 class SavingsBank {
     constructor(currency, alias, limit) {
         this.id = savingsBanksId;
         savingsBanksId++;
+
         this.currency = currency;
         this.balance = 0;
-        if (currency == "ARS") {
+
+        if (currency === "ARS") {
             this.limit = limit;
             this.overdraft = 0;
         }
+
         this.debitCards = [];
         this.movements = [];
         this.alias = alias;
         this.cbu = cbuCounter;
         cbuCounter++;
     }
-    // 18)
+
     withdrawMoneyFromAccount(amount) {
-        if (this.currency == "USD") {
-            if (this.balance > amount)
-                consolelog("extraccion hecha con exito")
-            this.balance -= amount
-        } if ((this.currency == "ARS") && (this.balance > amount)) {
-            consolelog("extraccion hecha con exito")
-            this.balance -= amount
-        } if ((this.currency == "ARS") && (this.balance < amount) && (this.limit > amount - this.balance)) {
-            this.balance = 0
-            this.limit -= amount - balance
-            this.overdraft -= balance - amount
-            consolelog("extraccion hecha con exito")
+        if (this.currency === "USD") {
+            if (this.balance > amount) {
+                console.log("extracción hecha con éxito");
+                this.balance -= amount;
+            }
+        } else if (this.currency === "ARS") {
+            if (this.balance >= amount) {
+                console.log("extracción hecha con éxito");
+                this.balance -= amount;
+            } else if (this.limit >= (amount - this.balance)) {
+                let extra = amount - this.balance;
+                this.balance = 0;
+                this.limit -= extra;
+                this.overdraft += extra;
+                console.log("extracción hecha con éxito con descubierto");
+            } else {
+                console.log("saldo insuficiente");
+            }
         } else {
-            consolelog("saldo insuficiente")
+            console.log("saldo insuficiente");
         }
     }
 
-    // 19)
     depositMoneyIntoSavingBank(amount) {
-        if ((this.currency == "ARS") && (this.overdraft > 0)) {
-            amount -= this.overdraft
-            this.limit += this.overdraft
-            this.overdraft = 0
-            this.balance += amount
-            return true
-            consolelog("deposito en caja de ahorro en pesos hecho con exito. Va a figurar menos de lo ingresado en la cuenta, esto es porque pagamos la deuda del limite descubierto")
-        } if ((this.currency == "ARS") && (this.overdraft = 0)) {
-            this.balance += amount
-            consolelog("deposito en caja de ahorro en pesos hecho con exito")
-            return true
-        } if (this.currency == "USD") {
-            this.balance += amount
-            consolelog("deposito en caja de ahorro en dolares hecho con exito")
-            return true
+        if (this.currency === "ARS" && this.overdraft > 0) {
+            let amountLeft = amount - this.overdraft;
+            this.limit += this.overdraft;
+            this.overdraft = 0;
+            this.balance += amountLeft;
+            console.log("depósito con descubierto cubierto");
+            return true;
+        } else if (this.currency === "ARS" && this.overdraft === 0) {
+            this.balance += amount;
+            console.log("depósito en caja de ahorro en pesos exitoso");
+            return true;
+        } else if (this.currency === "USD") {
+            this.balance += amount;
+            console.log("depósito en caja de ahorro en dólares exitoso");
+            return true;
         } else {
-            consolelog("hubo un problema")
-            return false
+            console.log("hubo un problema");
+            return false;
         }
     }
 
-    // 21)
     recordSavingsAccountMovements(idThirdPartyInvolved, amount) {
         try {
             this.balance += amount;
-            this.movements.push(new Movement(idThirdPartyInvolved, amount, 0))
-            
-            return true
+            this.movements.push(new Movement(idThirdPartyInvolved, amount, 0));
+            return true;
         } catch {
-            return false
+            return false;
         }
-
     }
 }
 
-const savingBanks = [
-    new SavingsBank("ARS", "mi.ahorro.personal", 500000),
-    new SavingsBank("USD", "dolar.futuro.2025", 10000),
-    new SavingsBank("ARS", "gastos.mensuales.abril", 150000),
-    new SavingsBank("EUR", "ahorro.europa.viaje", 8000),
-    new SavingsBank("ARS", "regalo.cumple.juan", 50000)
-];
+const savingBanks = [];
+
+window.SavingsBank = SavingsBank;
+window.savingBanks = savingBanks;
+

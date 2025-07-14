@@ -1,203 +1,394 @@
-const screen = 0;
+let currentScreen = 0;
+let currentClient = null;
 
-// 9)
 function searchClientById(clientID) {
-    for (let i = 0; i < clients.lenght; i++) {
-        if (clients[i].id == clientID) {
-            console.log(i)
-            return i
+    for (let i = 0; i < clients.length; i++) {
+        if (clients[i].id === clientID) {
+            console.log(i + 1);
+            return i;
         }
     }
-
 }
 
-// 10)
+window.searchClientById = searchClientById;
+
 function searchSavingBankByClientID(clientID) {
-    for (let i = 0; i < clients.lenght; i++) {
-        if (clients[i].id == clientID) {
-            console.log(clients[i].savingsBanks)
-            return clients[i].savingsBanks
-        }
-    }
+    const client = clients.find(c => c.id === clientID);
+    return client ? client.savingsBanks : null;
 }
 
-// 11)
 function searchDebitCardsByClientID(clientID) {
-    for (let i = 0; i < clients.lenght; i++) {
-        if (clients[i].id == clientID) {
-            // falta un for
-            for (let h = 0; h < clients[i].savingsBanks[j].debitCards.lenght; h++) {
-                console.log(clients[i].savingsBanks[j].debitCards[h])
-                return clients[i].savingsBanks[j].debitCards[h]
-            }
-        }
+    const client = clients.find(c => c.id === clientID);
+    if (!client) return null;
+
+    let allCards = [];
+    for (let sb of client.savingsBanks) {
+        allCards.push(...sb.debitCards);
     }
+    return allCards;
 }
 
-// 12)
 function searchDebitCardsByCardID(debitCardID) {
-    for (let i = 0; i < clients.lenght; i++) {
-        for (let j = 0; j < clients[i].savingsBanks.lenght; j++) {
-            for (let h = 0; h < clients[i].savingsBanks[j].debitCards.lenght; h++) {
-                if (clients[i].savingsBanks[j].debitCards[h].id == debitCardID) {
-                    console.log("la tajeta:", debitCards[h], "es de", clients[i])
-                    return clients[i]
+    for (let client of clients) {
+        for (let sb of client.savingsBanks) {
+            for (let card of sb.debitCards) {
+                if (card.id === debitCardID) {
+                    console.log("la tarjeta:", card, "es de", client);
+                    return client;
                 }
             }
         }
-
     }
 }
 
-// 13)
 function searchCreditCardsByClientID(clientID) {
-    for (let i = 0; i < clients.length; i++) {
-        if (clients[i].id == clientID) {
-            return clients[i].creditCards;
-        }
-    }
+    const client = clients.find(c => c.id === clientID);
+    return client ? client.creditCards : null;
 }
 
-// 14) 
 function searchCreditCardsByCardID(creditCardID) {
-    for (let i = 0; i < clients.length; i++) {
-        for (let j = 0; j < clients[i].creditCards.length; j++) {
-            if (clients[i].creditCards[j] == creditCardID) {
-                console.log(clients[i].creditCards[j])
-                return clients[i].creditCards[j]
+    for (let client of clients) {
+        for (let card of client.creditCards) {
+            if (card.id === creditCardID) {
+                return card;
             }
         }
     }
 }
 
-// 15)
 function searchMovementsBySavingBankID(savingBankID) {
-    for (let i = 0; i < savingBanks.length; i++) {
-        if (savingBanks[i].id == savingBankID) {
-            for (let j = 0; j < savingBanks[i].movements.length; j++) {
-                console.log(savingBanks[i].movements[j])
-                return savingBanks[i].movements[j]
-            }
-        }
-    }
+    const bank = savingBanks.find(sb => sb.id === savingBankID);
+    return bank ? bank.movements : null;
 }
 
-// 16)
 function searchMovementsByDebitCardID(debitCardID) {
-    for (let i = 0; i < debitCards.length; i++) {
-        if (debitCards[i] == debitCardID) {
-            return debitCards[i].consumptions
+    for (let client of clients) {
+        for (let sb of client.savingsBanks) {
+            for (let card of sb.debitCards) {
+                if (card.id === debitCardID) {
+                    return card.movements || [];
+                }
+            }
         }
+    }
+    return [];
+}
+
+function searchMovementsByCreditCardID(creditCardID) {
+    const card = creditCards.find(cc => cc.id === creditCardID);
+    return card ? card.consumptions : null;
+}
+
+function findSavingBankById(id) {
+    for (let client of clients) {
+        for (let sb of client.savingsBanks) {
+            if (sb.id == id) return sb;
+        }
+    }
+    return null;
+}
+
+function moneyTransfer(amount, idOrigin, idDestination) {
+
+    if (
+        typeof amount !== 'number' || isNaN(amount) || amount <= 0 ||
+        typeof idOrigin !== 'number' || isNaN(idOrigin) ||
+        typeof idDestination !== 'number' || isNaN(idDestination)
+    ) {
+        console.log("Datos inválidos para la operación");
+        return false;
+    }
+
+
+    const originAccount = findSavingBankById(idOrigin);
+    const destinationAccount = findSavingBankById(idDestination);
+
+    if (!originAccount || !destinationAccount) {
+        console.log("Cuenta origen o destino no encontrada");
+        return false;
+    }
+
+    originAccount.withdrawMoneyFromAccount(amount);
+    destinationAccount.depositMoneyIntoSavingBank(amount);
+    return true;
+}
+
+function changeScreen() {
+    let paginaUsuario = ui.getpaginaUsuario();
+    let inicioSesionUsuario = ui.getinicioSesionUsuario();
+    let menuHamburguesa = document.getElementById("menuHamburguesa");
+
+    if (!paginaUsuario || !inicioSesionUsuario || !menuHamburguesa) {
+        console.error("No se encontraron elementos necesarios para cambiar de pantalla");
+        return;
+    }
+
+    if (currentScreen === 0) {
+        paginaUsuario.style.display = "none";
+        inicioSesionUsuario.style.display = "block";
+        menuHamburguesa.style.display = "none";
+    } if (currentScreen === 1) {
+        formularios.style.display = "none";
+        paginaUsuario.style.display = "block";
+        menuHamburguesa.style.display = "block";
     }
 }
 
-// 17)
-function searchMovementsByCreditCardID(creditCardID){
-    for (let i = 0; i < creditCards.length; i++) {
-        if (creditCards[i] == creditCardID) {
-            return creditCards[i].consumptions
-        }
-    }
-}
 
-// 23) 
-function moneyTransfer(amountInPesos, idOrigin, idDestination){
-        if (!amountInPesos && !idOrigin && !idDestination) {
-            for (let i = 0; i < savingBanks.length; i++) {
-                if (savingBanks[i] == idOrigin) {
-                    withdrawMoneyFromAccount(amount)
-                    return true
-                }
-            }
-            for (let i = 0; i < savingBanks.length; i++) {
-                if (savingBanks[i] == idDestination) {
-                    depositMoneyIntoSavingBank(amount)
-                    return true
-                }
-            }
-            return true
-        } else {
-            return false
-        }
-
-}
 
 // 24)
-function changeScreen() {
-    const accountsSection = document.getElementById("accounts");
-    const debitCardsSection = document.getElementById("debitCards");
-    const transfersSection = document.getElementById("transfers");
-    const dollarSection = document.getElementById("dollar");
-    const creditCardsSection = document.getElementById("creditCards");
-    const paymentsSection = document.getElementById("payments");
-    const investmentsSection = document.getElementById("investments");
-    const loginSection = document.getElementById("loginFormContainer");
-    const registerSection = document.getElementById("registerFormContainer");
+function login() {
+    let dni = ui.getDNI();
+    let password = ui.getPassword();
 
-    if (screen == 0) {
-        loginSection.style.display = "";
-        registerSection.style.display = "";
-        accountsSection.style.display = "none";
-        debitCardsSection.style.display = "none";
-        transfersSection.style.display = "none";
-        dollarSection.style.display = "none";
-        creditCardsSection.style.display = "none";
-        paymentsSection.style.display = "none";
-        investmentsSection.style.display = "none";
-    } if (screen == 1) {
-        accountsSection.style.display = "";
-        debitCardsSection.style.display = "";
-        transfersSection.style.display = "";
-        dollarSection.style.display = "";
-        creditCardsSection.style.display = "";
-        paymentsSection.style.display = "";
-        investmentsSection.style.display = "";
-        loginSection.style.display = "none";
-        registerSection.style.display = "none";
+    const client = clients.find(c => c.dni === dni && c.password === password);
+
+    if (client) {
+        alert("Has ingresado correctamente");
+        currentScreen = 1;
+        currentClient = client;
+        changeScreen();
+        ui.selectPaymentMethods();
+        ui.showAccountsOrigin();
+        ui.showAccountsDestiny();
+        ui.showDollarAccounts();
+        ui.showPesosAccounts();
+        ui.showDebitCardInfo();
+        ui.showCreditCards();
+        ui.selectCreditCards();
+        ui.selectSavingsBank();
+        ui.investmentAccountSelect();
+        ui.showAccounts();
+
+    } else {
+        alert("Ha ocurrido un error. Verifique que los datos estén correctamente ingresados");
     }
 }
 
-function login(){
-    let dni = document.getElementById("loginDni").value;
-    let  password = document.getElementById("loginPassword").value;
 
-    for(let i = 0; i < clients.length; i++){
-        if (clients[i].dni == dni && clints[i].password == password){
-            screen=1;
-        } else {
-            alert("Error. Verifique haber completado los campos correctamente");
-        }
+window.addEventListener("DOMContentLoaded", () => {
+    changeScreen();
+
+    const loginForm = document.getElementById("loginForm");
+    loginForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        login();
+    });
+
+    document.querySelector("#transfers form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    moneyTransferButton();
+    });
+
+    document.querySelector("#dollar form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    buyingSellingDollarsButton();
+    });
+
+});
+
+//25) 
+function registrarse() {
+    let dni = ui.getRegisterDNI();
+    let name = ui.getRegisterName();
+    let email = ui.getRegisterEmail();
+    let lastName = ui.getRegisterLastName();
+    let password = ui.getRegisterPassword();
+
+    if (dni && name && email && lastName && password) {
+        new Client(dni, password, name, lastName, email)
+        alert("Te has registrado correctamente!");
+
+        currentScreen = 1;
+        changeScreen();
+        ui.selectPaymentMethods();
+        ui.showAccountsOrigin();
+        ui.showAccountsDestiny();
+        ui.showDollarAccounts();
+        ui.showPesosAccounts();
+        ui.showDebitCardInfo();
+        ui.showCreditCards();
+        ui.selectCreditCards();
+        ui.selectSavingsBank();
+        ui.investmentAccountSelect();
+        ui.showAccounts();
+
+
+    } else {
+        alert("Por favor, complete todos los campos");
     }
 }
 
-//25)
-function register(){
-    let name = document.getElementById("registerName").value;
-    let  lastName = document.getElementById("registerLastName").value;
-    let dni = document.getElementById("registerDni").value;
-    let email = document.getElementById("registerEmail").value;
-    let password = document.getElementById("registerPassword").value;
-    if(name === "" || lastName === "" || dni === "" || email === "" || password === ""){
-        for(let i = 0; i < clients.length; i++){
-            if(clients[i].dni == dni){
-                alert("Error registrando la cuenta");
-            } else {
-                if(dni.lenght < 7){
-                    alert("Error registrando la cuenta");
-                } else {
-                    clients.push(dni, password, name, lastName)
-                }
+document.getElementById("registerForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    registrarse();
+});
+
+// 26)
+function logout() {
+    currentScreen = 0;
+    changeScreen();
+    ui.clearLoginForm();
+    ui.clearRegisterForm();
+    const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById("offcanvasMenu"));
+    if (offcanvas) {
+        offcanvas.hide();
+    }
+}
+
+
+//28)
+function verMovimientos(accountId) {
+    const movements = searchMovementsBySavingBankID(accountId);
+    const modalTitle = document.getElementById("modalTitle");
+    const modalBody = document.getElementById("modalBody");
+
+    modalTitle.textContent = "Movimientos de la cuenta";
+    modalBody.innerHTML = "";
+
+    if (!movements || movements.length === 0) {
+        modalBody.innerHTML = "<p>No hay movimientos para esta cuenta.</p>";
+    } else {
+        movements.forEach(mov => {
+            modalBody.innerHTML += `
+                <div class="mb-2">
+                    <p><strong>Nombre del tercero:</strong> ${mov.thirdPartyName}</p>
+                    <p><strong>Monto:</strong> ${mov.amount}</p>
+                    <p><strong>Cuotas:</strong> ${mov.coutes}</p>
+                    <hr>
+                </div>
+            `;
+        });
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById("modal"));
+    modal.show();
+}
+
+//30)
+function moneyTransferButton() {
+    const idOrigin = parseInt(document.getElementById("transferOrigin").value);
+    const amount = parseFloat(document.getElementById("transferAmount").value);
+    let inputDest = document.getElementById("transferDestiny").value;
+
+    if (!inputDest) {
+        inputDest = document.getElementById("transferDestinysSelect").value;
+    }
+
+    let destAccountId = null;
+
+    for (let client of clients) {
+        for (let sb of client.savingsBanks) {
+            if (sb.alias === inputDest || sb.cbu === inputDest) {
+                destAccountId = sb.id;
+                break;
             }
         }
+        if (destAccountId) break;
+    }
+
+    if (!destAccountId) {
+        alert("El CBU o Alias de destino es incorrecto");
+        return;
+    }
+
+    const success = moneyTransfer(amount, idOrigin, destAccountId);
+
+    if (success) {
+        alert("Transferencia realizada con éxito ✅");
+        document.getElementById("transferAmount").value = "";
+        document.getElementById("transferDestiny").value = "";
+        document.getElementById("transferDestinysSelect").selectedIndex = 0;
+        ui.showAccounts();
     } else {
-        alert("Error registrando la cuenta");
+        alert("No se pudo realizar la transferencia ❌");
     }
 }
 
-//26)
-function logout(){
-    alert("Se cerró la sesión");
-    screen = 0;
+//31)
+
+function buyingSellingDollarsButton() {
+    const operation = document.getElementById("dollarOperation").value;
+    const pesosAccountId = parseInt(document.getElementById("pesosAccount").value);
+    const dollarsAccountId = parseInt(document.getElementById("dollarsAccount").value);
+    const amount = parseFloat(document.getElementById("dollarsAmount").value);
+
+    console.log(operation, " ", pesosAccountId, " ", dollarsAccountId, " ", amount);
+
+    if (!amount || amount <= 0) {
+        alert("Monto inválido");
+        return;
+    }
+
+    if (isNaN(pesosAccountId) || isNaN(dollarsAccountId)) {
+        alert("Debés seleccionar ambas cuentas correctamente");
+        return;
+    }
+
+    if (!currentClient) {
+        alert("No se encontró el cliente logueado");
+        return;
+    }
+
+    let success = false;
+
+    if (operation === "compra") {
+        success = currentClient.buyingSellingDollars(amount, pesosAccountId, dollarsAccountId, "compra");
+    } else if (operation === "venta") {
+        success = currentClient.buyingSellingDollars(amount, dollarsAccountId, pesosAccountId, "venta");
+    } else {
+        alert("Operación inválida");
+        return;
+    }
+
+    if (success) {
+        alert("Operación realizada con éxito ✅");
+        document.getElementById("dollarsAmount").value = "";
+        document.getElementById("dollarOperation").selectedIndex = 0;
+        document.getElementById("pesosAccount").selectedIndex = 0;
+        document.getElementById("dollarsAccount").selectedIndex = 0;
+        ui.showAccounts();
+    } else {
+        alert("No se pudo realizar la operación ❌");
+    }
 }
 
-changeScreen()
+function actualizarEquivalenteDolar() {
+    const operation = document.getElementById("dollarOperation").value;
+    const amount = parseFloat(document.getElementById("dollarsAmount").value);
+    const span = document.getElementById("dollarEquivalent");
+
+    if (!operation || isNaN(amount) || amount <= 0) {
+        span.textContent = "$0";
+        return;
+    }
+
+    const cotizacionCompra = 1150;
+    const cotizacionVenta = 1200;
+
+    if (operation === "compra") {
+        span.textContent = `$${(amount * cotizacionVenta).toFixed(2)}`;
+    } else if (operation === "venta") {
+        span.textContent = `$${(amount * cotizacionCompra).toFixed(2)}`;
+    }
+}
+
+//32
+
+
+
+document.getElementById("dollarOperation").addEventListener("change", actualizarEquivalenteDolar);
+document.getElementById("dollarsAmount").addEventListener("input", actualizarEquivalenteDolar);
+window.searchSavingBankByClientID = searchSavingBankByClientID;
+window.searchDebitCardsByClientID = searchDebitCardsByClientID;
+window.searchDebitCardsByCardID = searchDebitCardsByCardID;
+window.searchCreditCardsByClientID = searchCreditCardsByClientID;
+window.searchCreditCardsByCardID = searchCreditCardsByCardID;
+window.searchMovementsBySavingBankID = searchMovementsBySavingBankID;
+window.searchMovementsByDebitCardID = searchMovementsByDebitCardID;
+window.searchMovementsByCreditCardID = searchMovementsByCreditCardID;
+window.moneyTransfer = moneyTransfer;
+window.changeScreen = changeScreen;
+window.login = login;
+window.registrarse = registrarse;
+window.logout = logout;

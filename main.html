@@ -20,7 +20,7 @@
 
                 <!-- Botón menú hamburguesa -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu"
-                    aria-controls="offcanvasMenu">
+                    aria-controls="offcanvasMenu" id="menuHamburguesa">
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
@@ -37,7 +37,7 @@
             <div class="offcanvas-body">
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <span id="usuario-logueado">Hola, Usuario</span>
-                    <button class="btn btn-outline-light btn-sm" id="logout">Cerrar sesión</button>
+                    <button class="btn btn-outline-light btn-sm" id="logout" onclick="logout()">Cerrar sesión</button>
                 </div>
                 <hr class="text-white">
                 <ul class="nav flex-column">
@@ -69,7 +69,7 @@
 
     </div>
 
-    <div>
+    <div id="formularios">
         <section class="container py-4">
             <div class="row justify-content-center">
                 <div class="col-md-6">
@@ -81,12 +81,15 @@
                         <li class="nav-item">
                             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#registerFormContainer"
                                 type="button">Registrarse</button>
+
                         </li>
                     </ul>
 
                     <div class="tab-content">
                         <!-- FORMULARIO DE LOGIN -->
-                        <div class="tab-pane fade show active" id="loginFormContainer">
+                        <!-- LOGIN -->
+                        <div class="tab-pane fade show active" id="loginFormContainer" role="tabpanel">
+
                             <form id="loginForm">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="loginDni" placeholder="DNI" required>
@@ -98,11 +101,13 @@
                                     <label for="loginPassword">Contraseña</label>
                                 </div>
                                 <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+
                             </form>
                         </div>
 
                         <!-- FORMULARIO DE REGISTRO -->
-                        <div class="tab-pane fade" id="registerFormContainer">
+                        <div class="tab-pane fade" id="registerFormContainer" role="tabpanel">
+
                             <form id="registerForm">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="registerName" placeholder="Nombre"
@@ -138,7 +143,7 @@
         </section>
     </div>
 
-    <div>
+    <div id="pagina-usuario">
         <section id="accounts" class="border rounded shadow-sm p-4 container my-5">
             <h2 class="mb-4">Mis Cuentas</h2>
 
@@ -148,14 +153,18 @@
                     <div class="card shadow-sm h-100">
                         <div class="card-body">
                             <h5 class="card-title">Caja de Ahorro en Pesos</h5>
-                            <p class="card-text mb-1"><strong>Moneda:</strong> ARS</p>
-                            <p class="card-text mb-1"><strong>Saldo:</strong> $120.000</p>
-                            <p class="card-text mb-1"><strong>Descubierto disponible:</strong> $5.000</p>
-                            <p class="card-text mb-1"><strong>Descubierto usado:</strong> $2.000</p>
-                            <p class="card-text mb-1"><strong>Alias:</strong> mi.cuenta.pesos</p>
-                            <p class="card-text mb-3"><strong>CBU:</strong> 0123456789012345678901</p>
+                            <p id="monedaCajaDeAhorro" class="card-text mb-1"><strong>Moneda:</strong> ARS</p>
+                            <p id="SaldoCajaDeAhorro" class="card-text mb-1"><strong>Saldo:</strong> $120.000</p>
+                            <p id="DescubiertoDisponibleCajaDeAhorro" class="card-text mb-1"><strong>Descubierto
+                                    disponible:</strong> $5.000</p>
+                            <p id="DescubiertoUsadoCajaDeAhorro" class="card-text mb-1"><strong>Descubierto
+                                    usado:</strong> $2.000</p>
+                            <p id="aliasCajaDeAhorro" class="card-text mb-1"><strong>Alias:</strong> mi.cuenta.pesos</p>
+                            <p id="cbuCajaDeAhorro" class="card-text mb-3"><strong>CBU:</strong> 0123456789012345678901
+                            </p>
                             <div class="d-grid">
-                                <button class="btn btn-outline-primary btn-sm">Ver movimientos</button>
+                                <button class="btn btn-outline-primary btn-sm" onclick="verMovimientos()">Ver
+                                    movimientos</button>
                             </div>
                         </div>
                     </div>
@@ -221,6 +230,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="d-grid">
+                <button class="btn btn-outline-primary btn-sm" onclick="verMovimientos()">Ver movimientos</button>
             </div>
 
         </section>
@@ -511,10 +524,14 @@
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="clases/Movements.js"></script>
+    <script src="clases/savingBank.js"></script>
+    <script src="clases/DebitCard.js"></script>
+    <script src="clases/CreditCard.js"></script>
+    <script src="clases/Client.js"></script>
+    <script src="dom.js"></script>
     <script src="index.js"></script>
-
 </body>
 
 </html>
