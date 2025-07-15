@@ -136,6 +136,7 @@ clients[4].savingsBanks.push(cuenta6);
 savingBanks.push(cuenta6);
 
 const tarjetaCredito1 = new CreditCard("Visa", "2023-01-15", "123", "Visa Oro", "2023-02-10", "2025-01-15");
+tarjetaCredito1.balance = 100;
 const tarjetaCredito2 = new CreditCard("MasterCard", "2022-05-20", "456", "Master Platinum", "2022-06-15", "2024-05-20");
 const tarjetaCredito3 = new CreditCard("Amex", "2024-03-10", "789", "Amex Blue", "2024-04-05", "2026-03-10");
 const tarjetaCredito4 = new CreditCard("Naranja", "2021-11-01", "321", "Naranja Clásica", "2021-12-01", "2023-11-01");

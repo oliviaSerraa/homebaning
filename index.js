@@ -374,6 +374,137 @@ function actualizarEquivalenteDolar() {
 }
 
 //32
+function balanceFind(){
+    const select = document.getElementById("creditCardSelect");
+    const cardId = parseInt(select.value);
+
+    if (isNaN(cardId)) {
+        alert("Seleccione una tarjeta válida");
+        return;
+    }
+
+    const tarjetaSeleccionada = currentClient.creditCards.find(t => t.id === cardId);
+
+    if (!tarjetaSeleccionada) {
+        alert("Tarjeta no encontrada");
+        return;
+    }
+
+    if (tarjetaSeleccionada.balance <= 0) {
+        alert("No tiene deuda en esta tarjeta");
+        return;
+    }
+
+    return tarjetaSeleccionada.balance;
+}
+
+function pagoMinimo() {
+    const minimo = (balanceFind() * 0.1);
+    document.getElementById("customPaymentAmount").value = minimo;
+}
+
+function pagoTotal() {
+    document.getElementById("customPaymentAmount").value = balanceFind();
+}
+
+function pagoButton() {
+    const montoInput = document.getElementById("customPaymentAmount").value;
+    const monto = parseFloat(montoInput);
+
+    if (isNaN(monto) || monto <= 0) {
+        alert("Ingrese un monto válido");
+        return;
+    }
+
+    const balance = balanceFind();
+    if (!balance) return;
+
+    const minimo = balance * 0.1;
+
+    if (monto < minimo) {
+        alert("Debe ingresar al menos el monto mínimo a pagar");
+        return;
+    }
+
+    const tarjetaId = parseInt(document.getElementById("creditCardSelect").value);
+    const tarjeta = currentClient.creditCards.find(t => t.id === tarjetaId);
+
+    if (!tarjeta) {
+        alert("Tarjeta no encontrada");
+        return;
+    }
+
+    const cuentaPesos = currentClient.savingsBanks.find(c => c.currency === "ARS");
+    if (!cuentaPesos) {
+        alert("No tiene caja de ahorro en pesos");
+        return;
+    }
+
+    if ((cuentaPesos.balance + cuentaPesos.limit) < monto) {
+        alert("Saldo insuficiente en la cuenta en pesos");
+        return;
+    }
+
+    cuentaPesos.withdrawMoneyFromAccount(monto);
+    tarjeta.registerPayment(monto);
+
+    alert("Pago realizado con éxito ✅");
+    document.getElementById("customPaymentAmount").value = "";
+    ui.showAccounts();
+    ui.showCreditCards();
+}
+
+//33)
+function registrarGasto() {
+    const selectCard = document.getElementById("paymentMethodSelect").value;
+    const store = document.getElementById("storeNameInput").value;
+    const amount = parseFloat(document.getElementById("expenseAmountInput").value);
+    const cuotes = parseInt(document.getElementById("installmentsSelect").value);
+
+    if (!selectCard || !store || isNaN(amount) || amount <= 0) {
+        alert("Completá todos los campos correctamente");
+        return;
+    }
+
+    const [tipo, id] = selectCard.split("-");
+    const cardId = parseInt(id);
+
+    if (tipo === "credit") {
+        const tarjeta = currentClient.creditCards.find(c => c.id === cardId);
+        if (!tarjeta) return alert("Tarjeta de crédito no encontrada");
+
+        const exito = tarjeta.recordCreditCardMovements(store, amount, cuotes);
+        console.log(store, " ", amount, " ", cuotes);
+        if (exito) {
+            alert("Gasto registrado en tarjeta de crédito ✅");
+        } else {
+            alert("No se pudo registrar el gasto ❌");
+        }
+
+    } else if (tipo === "debit") {
+        for (let sb of currentClient.savingsBanks) {
+            const tarjeta = sb.debitCards.find(d => d.id === cardId);
+            if (tarjeta) {
+                const exito = tarjeta.recordDebitCardMovements(store, amount);
+                if (exito) {
+                    alert("Gasto registrado en tarjeta de débito ✅");
+                } else {
+                    alert("No se pudo registrar el gasto ❌");
+                }
+                return;
+            }
+        }
+
+        alert("Tarjeta de débito no encontrada");
+    } else {
+        alert("Tipo de tarjeta no reconocido");
+    }
+    
+    document.getElementById("storeNameInput").value = "";
+    document.getElementById("expenseAmountInput").value = "";
+    document.getElementById("installmentsSelect").selectedIndex = 0;
+    document.getElementById("paymentMethodSelect").selectedIndex = 0;
+}
 
 
 

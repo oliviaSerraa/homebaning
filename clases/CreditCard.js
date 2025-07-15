@@ -35,21 +35,23 @@ class CreditCard {
     }
 
     // 22)
-    recordCreditCardMovements(idThirdPartyInvolved, amount, cuotes) {
+    recordCreditCardMovements(thirdPartyName, amount, cuotes) {
         try {
             if (amount < 0) {
-                let finalPrice = amount * this.interest
-                this.balance -= finalPrice
+                let finalPrice = amount * this.interest;
+                this.balance -= finalPrice;
             } else {
-                this.balance += amount
+                this.balance += amount;
             }
-            this.movements.push(new Movement(idThirdPartyInvolved, amount, cuotes))
-            return true
-        } catch {
-            return false
-        }
 
+            this.consumptions.push(new Movement(thirdPartyName, amount, cuotes));
+            return true;
+        } catch (e) {
+            console.error("Error al registrar movimiento:", e);
+            return false;
+        }
     }
+
 
     registerPayment(amount) {
         if (amount <= 0) return -1;

@@ -367,7 +367,7 @@ class UserInterface {
         });
     }
 
-    //32) a y b)
+    //32)
     renderCreditCardInfo(cardId) {
         const dni = this.getDNI();
         const client = clients.find(c => c.dni === dni);
@@ -412,6 +412,7 @@ class UserInterface {
             </div>
         `;
 
+
         const toggleCardNumberBtn = infoContainer.querySelector('.toggle-card-number');
         const toggleCvvBtn = infoContainer.querySelector('.toggle-cvv');
 
@@ -441,6 +442,35 @@ class UserInterface {
             });
         }
     }
+
+    showCreditCardMovements(cardId) {
+        const movements = searchMovementsByCreditCardID(parseInt(cardId));
+        const modalTitle = document.getElementById("modalTitle");
+        const modalBody = document.getElementById("modalBody");
+
+        modalTitle.textContent = "Movimientos de la tarjeta de crédito";
+        modalBody.innerHTML = "";
+
+        if (!movements || movements.length === 0) {
+            modalBody.innerHTML = "<p>No hay movimientos para esta tarjeta.</p>";
+        } else {
+            movements.forEach(mov => {
+                modalBody.innerHTML += `
+                    <div class="mb-2">
+                        <p><strong>Nombre del comercio:</strong> ${mov.thirdPartyName}</p>
+                        <p><strong>Monto:</strong> ${mov.amount}</p>
+                        <p><strong>Cuotas:</strong> ${mov.cuotes}</p>
+                        <p><strong>Fecha:</strong> ${new Date(mov.date).toLocaleDateString()}</p>
+                        <hr>
+                    </div>
+                `;
+            });
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById("modal"));
+        modal.show();
+    }
+
 
     selectPaymentMethods() {
         const dni = this.getDNI();

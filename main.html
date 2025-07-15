@@ -387,15 +387,19 @@
                 <div class="card-body">
                     <h5 class="card-title">Pagar tarjeta</h5>
                     <div class="mb-3">
-                        <button class="btn btn-outline-primary me-2" id="payMinimumBtn">Pago mínimo</button>
-                        <button class="btn btn-outline-success me-2" id="payTotalBtn">Pago total</button>
+                        <button class="btn btn-outline-primary me-2" id="payMinimumBtn" onclick="pagoMinimo()">Pago mínimo</button>
+                        <button class="btn btn-outline-success me-2" id="payTotalBtn" onclick="pagoTotal()">Pago total</button>
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text">$</span>
                         <input type="number" class="form-control" id="customPaymentAmount" placeholder="Monto">
-                        <button class="btn btn-outline-secondary" id="payCustomBtn">Pagar</button>
+                        <button class="btn btn-outline-secondary" id="payCustomBtn" onclick="pagoButton()">Pagar</button>
                     </div>
                 </div>
+            </div>
+
+            <div class="d-grid">
+                <button class="btn btn-outline-primary btn-sm" onclick="verMovimientos()">Ver movimientos</button>
             </div>
 
         </section>
@@ -439,7 +443,7 @@
             </div>
 
             <!-- Botón para registrar gasto -->
-            <button class="btn btn-danger" id="registerExpenseButton">Registrar gasto</button>
+            <button class="btn btn-danger" id="registerExpenseButton" onclick="registrarGasto()">Registrar gasto</button>
         </section>
 
 
