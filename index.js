@@ -295,13 +295,13 @@ function moneyTransferButton() {
     const success = moneyTransfer(amount, idOrigin, destAccountId);
 
     if (success) {
-        alert("Transferencia realizada con éxito ✅");
+        alert("Transferencia realizada con éxito");
         document.getElementById("transferAmount").value = "";
         document.getElementById("transferDestiny").value = "";
         document.getElementById("transferDestinysSelect").selectedIndex = 0;
         ui.showAccounts();
     } else {
-        alert("No se pudo realizar la transferencia ❌");
+        alert("No se pudo realizar la transferencia");
     }
 }
 
@@ -342,14 +342,14 @@ function buyingSellingDollarsButton() {
     }
 
     if (success) {
-        alert("Operación realizada con éxito ✅");
+        alert("Operación realizada con éxito");
         document.getElementById("dollarsAmount").value = "";
         document.getElementById("dollarOperation").selectedIndex = 0;
         document.getElementById("pesosAccount").selectedIndex = 0;
         document.getElementById("dollarsAccount").selectedIndex = 0;
         ui.showAccounts();
     } else {
-        alert("No se pudo realizar la operación ❌");
+        alert("No se pudo realizar la operación");
     }
 }
 
@@ -374,41 +374,18 @@ function actualizarEquivalenteDolar() {
 }
 
 //32
-function balanceFind(){
-    const select = document.getElementById("creditCardSelect");
-    const cardId = parseInt(select.value);
-
-    if (isNaN(cardId)) {
-        alert("Seleccione una tarjeta válida");
-        return;
-    }
-
-    const tarjetaSeleccionada = currentClient.creditCards.find(t => t.id === cardId);
-
-    if (!tarjetaSeleccionada) {
-        alert("Tarjeta no encontrada");
-        return;
-    }
-
-    if (tarjetaSeleccionada.balance <= 0) {
-        alert("No tiene deuda en esta tarjeta");
-        return;
-    }
-
-    return tarjetaSeleccionada.balance;
-}
 
 function pagoMinimo() {
-    const minimo = (balanceFind() * 0.1);
+    const minimo = (ui.balanceFind() * 0.1);
     document.getElementById("customPaymentAmount").value = minimo;
 }
 
 function pagoTotal() {
-    document.getElementById("customPaymentAmount").value = balanceFind();
+    document.getElementById("customPaymentAmount").value = ui.balanceFind();
 }
 
 function pagoButton() {
-    const montoInput = document.getElementById("customPaymentAmount").value;
+    const montoInput = ui.montoInput();
     const monto = parseFloat(montoInput);
 
     if (isNaN(monto) || monto <= 0) {
@@ -416,7 +393,7 @@ function pagoButton() {
         return;
     }
 
-    const balance = balanceFind();
+    const balance = ui.balanceFind();
     if (!balance) return;
 
     const minimo = balance * 0.1;
@@ -448,18 +425,19 @@ function pagoButton() {
     cuentaPesos.withdrawMoneyFromAccount(monto);
     tarjeta.registerPayment(monto);
 
-    alert("Pago realizado con éxito ✅");
-    document.getElementById("customPaymentAmount").value = "";
+    alert("Pago realizado con éxito");
+    ui.clearPagoButton();
     ui.showAccounts();
     ui.showCreditCards();
 }
 
 //33)
 function registrarGasto() {
-    const selectCard = document.getElementById("paymentMethodSelect").value;
-    const store = document.getElementById("storeNameInput").value;
-    const amount = parseFloat(document.getElementById("expenseAmountInput").value);
-    const cuotes = parseInt(document.getElementById("installmentsSelect").value);
+    const selectCard = ui.cardSelect();
+    const store = ui.storeInput();
+    const amount = ui.amountInput();
+    const cuotes = ui.cuotesSelect();
+
 
     if (!selectCard || !store || isNaN(amount) || amount <= 0) {
         alert("Completá todos los campos correctamente");
@@ -476,9 +454,9 @@ function registrarGasto() {
         const exito = tarjeta.recordCreditCardMovements(store, amount, cuotes);
         console.log(store, " ", amount, " ", cuotes);
         if (exito) {
-            alert("Gasto registrado en tarjeta de crédito ✅");
+            alert("Gasto registrado en tarjeta de crédito");
         } else {
-            alert("No se pudo registrar el gasto ❌");
+            alert("No se pudo registrar el gasto");
         }
 
     } else if (tipo === "debit") {
@@ -487,9 +465,9 @@ function registrarGasto() {
             if (tarjeta) {
                 const exito = tarjeta.recordDebitCardMovements(store, amount);
                 if (exito) {
-                    alert("Gasto registrado en tarjeta de débito ✅");
+                    alert("Gasto registrado en tarjeta de débito");
                 } else {
-                    alert("No se pudo registrar el gasto ❌");
+                    alert("No se pudo registrar el gasto");
                 }
                 return;
             }
@@ -500,12 +478,34 @@ function registrarGasto() {
         alert("Tipo de tarjeta no reconocido");
     }
     
-    document.getElementById("storeNameInput").value = "";
-    document.getElementById("expenseAmountInput").value = "";
-    document.getElementById("installmentsSelect").selectedIndex = 0;
-    document.getElementById("paymentMethodSelect").selectedIndex = 0;
+    ui.clearRegistrarGasto();
 }
 
+function interesInversion() {
+    const monto = parseFloat(ui.leerSeleccionado());
+    const interes = ui.leerInversion();
+    const cuentaId = parseInt(ui.leerSavingBank());
+
+    if (!interes || isNaN(monto) || monto <= 0 || isNaN(cuentaId)) {
+        alert("Complete todos los campos correctamente");
+        return;
+    }
+
+    const cuenta = findSavingBankById(cuentaId);
+    if (!cuenta || cuenta.balance < monto) {
+        alert("Saldo insuficiente");
+        return;
+    }
+    cuenta.withdrawMoneyFromAccount(monto);
+    
+    const ganancia = monto * (interes / 100);
+    alert(`Inversión exitosa! Ganancia estimada en 30 días: $${ganancia}`);
+
+    cuenta.depositMoneyIntoSavingBank(ganancia)
+
+    ui.cleanInput();
+    
+}
 
 
 document.getElementById("dollarOperation").addEventListener("change", actualizarEquivalenteDolar);

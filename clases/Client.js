@@ -152,3 +152,39 @@ creditCards.push(tarjetaCredito1, tarjetaCredito2, tarjetaCredito3, tarjetaCredi
 
 window.Client = Client;
 window.clients = clients;
+
+tarjetaCredito1.recordCreditCardMovements("Supermercado Dia", 8500, 1);
+tarjetaCredito1.recordCreditCardMovements("YPF - Estación de servicio", 4200, 1);
+tarjetaCredito1.recordCreditCardMovements("Netflix", 1200, 1);
+tarjetaCredito1.recordCreditCardMovements("Mercado Libre", 18900, 3);
+tarjetaCredito1.recordCreditCardMovements("Restaurante Don Julio", 15600, 1);
+
+tarjetaCredito2.recordCreditCardMovements("Farmacity", 3200, 1);
+tarjetaCredito2.recordCreditCardMovements("Aerolíneas Argentinas", 45600, 6);
+tarjetaCredito2.recordCreditCardMovements("Spotify", 650, 1);
+tarjetaCredito2.recordCreditCardMovements("Zara", 12800, 3);
+tarjetaCredito2.recordCreditCardMovements("Disney+", 950, 1);
+
+tarjetaCredito3.recordCreditCardMovements("Hotel Sheraton", 32400, 1);
+tarjetaCredito3.recordCreditCardMovements("Coto Digital", 7800, 1);
+tarjetaCredito3.recordCreditCardMovements("Apple Store", 45900, 12);
+tarjetaCredito3.recordCreditCardMovements("Starbucks", 1850, 1);
+tarjetaCredito3.recordCreditCardMovements("Movistar", 3200, 1);
+
+
+tarjetaCredito4.recordCreditCardMovements("Falabella", 21500, 3);
+tarjetaCredito4.recordCreditCardMovements("PedidosYa", 5600, 1);
+tarjetaCredito4.recordCreditCardMovements("Rappi", 4300, 1);
+tarjetaCredito4.recordCreditCardMovements("Cinemark", 2800, 1);
+tarjetaCredito4.recordCreditCardMovements("Musimundo", 12900, 6);
+
+tarjetaCredito5.recordCreditCardMovements("Carrefour", 9800, 1);
+tarjetaCredito5.recordCreditCardMovements("Easy", 18700, 3);
+tarjetaCredito5.recordCreditCardMovements("Personal", 4200, 1);
+tarjetaCredito5.recordCreditCardMovements("McDonald's", 2300, 1);
+tarjetaCredito5.recordCreditCardMovements("Fravega", 25600, 12);
+
+
+tarjetaCredito1.registerPayment(10000); 
+tarjetaCredito2.registerPayment(45600); 
+tarjetaCredito4.registerPayment(8000);

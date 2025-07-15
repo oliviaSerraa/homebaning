@@ -125,7 +125,6 @@ class UserInterface {
 
         if (!client || !select || !infoContainer) return;
 
-        // Asegurarse de que el select tenga opciones
         select.innerHTML = "";
         client.savingsBanks.forEach(sb => {
             const option = document.createElement("option");
@@ -134,13 +133,11 @@ class UserInterface {
             select.appendChild(option);
         });
 
-        // Mostrar info de la primera cuenta por defecto
         const firstAccount = client.savingsBanks[0];
         if (firstAccount) {
             this.renderDebitCardInfo(firstAccount.id);
         }
 
-        // Escuchar cambio en el select
         select.addEventListener("change", (e) => {
             const selectedId = parseInt(e.target.value);
             this.renderDebitCardInfo(selectedId);
@@ -232,7 +229,6 @@ class UserInterface {
         }
     }
 
-    // Nuevo método para mostrar movimientos de tarjeta de débito
     showDebitCardMovements(cardId) {
         const movements = searchMovementsByDebitCardID(parseInt(cardId));
         const modalTitle = document.getElementById("modalTitle");
@@ -355,12 +351,10 @@ class UserInterface {
         const client = clients.find(c => c.dni === dni);
         if (!client || !select || !infoContainer) return;
 
-        // Mostrar la primera tarjeta por defecto
         if (client.creditCards.length > 0) {
             this.renderCreditCardInfo(client.creditCards[0].id);
         }
 
-        // Escuchar cambios en el select
         select.addEventListener("change", (e) => {
             const selectedId = parseInt(e.target.value);
             this.renderCreditCardInfo(selectedId);
@@ -519,8 +513,93 @@ class UserInterface {
         });
     }
 
+    leerInversion() {
+        const op1 = document.getElementById("fund1").checked;
+        const op2 = document.getElementById("fund2").checked;
+        const op3 = document.getElementById("fund3").checked;
 
+        if (op1) return 2;
+        if (op2) return 5;
+        if (op3) return 10;
 
+        console.error("Seleccione un tipo de inversión antes de continuar");
+        return null;
+    }
+
+    leerSeleccionado() {
+        return document.getElementById("investmentAmount").value
+    }
+
+    leerSavingBank() {
+        return document.getElementById("investmentAccountSelect").value
+    }
+
+    cleanInput(){
+         document.getElementById("investmentAmount").value = "";
+    }
+    cleanSeleccionado(){
+        document.getElementById("fund1").checked;
+        document.getElementById("fund2").checked;
+        document.getElementById("fund3").checked;
+    }
+    clearRegistrarGasto(){
+        document.getElementById("storeNameInput").value = "";
+        document.getElementById("expenseAmountInput").value = "";
+        document.getElementById("installmentsSelect").selectedIndex = 0;
+        document.getElementById("paymentMethodSelect").selectedIndex = 0;
+    }
+
+    cardSelect(){
+       return document.getElementById("paymentMethodSelect").value;
+    }
+
+    storeInput(){
+        return document.getElementById("storeNameInput").value;
+    }
+
+    amountInput(){
+        return parseFloat(document.getElementById("expenseAmountInput").value);
+    }
+
+    cuotesSelect(){
+        return parseInt(document.getElementById("installmentsSelect").value);
+    }
+
+    clearPagoButton(){
+        document.getElementById("customPaymentAmount").value = "";
+    }
+
+    montoInput(){
+        return document.getElementById("customPaymentAmount").value;
+    }
+
+    montoInput(){
+        return document.getElementById("customPaymentAmount").value;
+    }
+
+    balanceFind(){
+        const select = document.getElementById("creditCardSelect");
+        const cardId = parseInt(select.value);
+
+        if (isNaN(cardId)) {
+            alert("Seleccione una tarjeta válida");
+            return;
+        }
+
+        const tarjetaSeleccionada = currentClient.creditCards.find(t => t.id === cardId);
+
+        if (!tarjetaSeleccionada) {
+            alert("Tarjeta no encontrada");
+            return;
+        }
+
+        if (tarjetaSeleccionada.balance <= 0) {
+            alert("No tiene deuda en esta tarjeta");
+            return;
+        }
+
+        return tarjetaSeleccionada.balance;
+    }
 
 }
 
