@@ -492,20 +492,51 @@ function interesInversion() {
     }
 
     const cuenta = findSavingBankById(cuentaId);
-    if (!cuenta || cuenta.balance < monto) {
+    
+    if (!cuenta || 
+        (cuenta.currency === "ARS" && (cuenta.balance + cuenta.limit < monto)) || 
+        (cuenta.currency === "USD" && cuenta.balance < monto)) {
         alert("Saldo insuficiente");
         return;
     }
+
     cuenta.withdrawMoneyFromAccount(monto);
-    
+
     const ganancia = monto * (interes / 100);
     alert(`Inversión exitosa! Ganancia estimada en 30 días: $${ganancia}`);
 
     cuenta.depositMoneyIntoSavingBank(ganancia)
 
     ui.cleanInput();
-    
+    document.getElementById("investmentAccountSelect").selectedIndex = 0;
+    ui.cleanSeleccionado();
+    ui.showAccounts();
 }
+
+
+function verMovimientosDebito() {
+    const selectedAccountId = parseInt(document.getElementById("debitCardAccountSelect").value);
+    const sb = currentClient.savingsBanks.find(c => c.id === selectedAccountId);
+    const card = sb?.debitCards[0];
+
+    if (card) {
+        ui.showDebitCardMovements(card.id);
+    } else {
+        alert("No se encontró la tarjeta de débito");
+    }
+}
+
+function verMovimientosCredito() {
+    const selectedCardId = parseInt(document.getElementById("creditCardSelect").value);
+    const card = currentClient.creditCards.find(c => c.id === selectedCardId);
+
+    if (card) {
+        ui.showCreditCardMovements(card.id);
+    } else {
+        alert("No se encontró la tarjeta de crédito");
+    }
+}
+
 
 
 document.getElementById("dollarOperation").addEventListener("change", actualizarEquivalenteDolar);

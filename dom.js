@@ -243,7 +243,7 @@ class UserInterface {
             movements.forEach(mov => {
                 modalBody.innerHTML += `
                 <div class="mb-2">
-                    <p><strong>Descripción:</strong> ${mov.description}</p>
+                    <p><strong>Descripción:</strong> ${mov.thirdPartyName}</p>
                     <p><strong>Monto:</strong> ${mov.amount}</p>
                     <p><strong>Fecha:</strong> ${new Date(mov.date).toLocaleDateString()}</p>
                     <hr>
@@ -535,13 +535,15 @@ class UserInterface {
     }
 
     cleanInput(){
-         document.getElementById("investmentAmount").value = "";
+        document.getElementById("investmentAmount").value = "";
     }
+
     cleanSeleccionado(){
-        document.getElementById("fund1").checked;
-        document.getElementById("fund2").checked;
-        document.getElementById("fund3").checked;
+        document.getElementById("fund1").checked = false;
+        document.getElementById("fund2").checked = false;
+        document.getElementById("fund3").checked = false;
     }
+
     clearRegistrarGasto(){
         document.getElementById("storeNameInput").value = "";
         document.getElementById("expenseAmountInput").value = "";
